@@ -1,15 +1,15 @@
-package com.aksh.titan.dao;
+package com.aksh.titan.service;
 
 import java.util.List;
 import java.util.Map;
 
 import com.aksh.titan.dto.Node;
 
-public interface NodeDao {
+public interface NodeService {
 	
-	Node create(Node baseEntity,boolean embedded);
+	Node create(Node baseEntity);
 
-	Node update(Node baseEntity,boolean embedded);
+	Node update(Node baseEntity);
 
 	Node readByURI(String uri);
 	

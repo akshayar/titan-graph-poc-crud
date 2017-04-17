@@ -4,21 +4,18 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.internal.scanning.PackageNamesScanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.aksh.titan.db.TitanDBConfigurator;
 
 @SpringBootApplication
-public class TitanGraphCrud extends ResourceConfig {
+public class TitanGraphCrud {
 	private static final Logger logger = Logger.getLogger(TitanGraphCrud.class);
 	private final String[] restResourcePackage = new String[] { "com.aksh.titan.rest" };
 
 	public TitanGraphCrud() {
 		logger.info("Constructor");
-		registerFinder(new PackageNamesScanner(restResourcePackage, false));
 	}
 
 	public static void main(String[] args) {

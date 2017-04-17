@@ -1,5 +1,6 @@
 package com.aksh.titan.dto;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Relationship {
@@ -28,6 +29,9 @@ public class Relationship {
 		this.relationshipName = relationshipName;
 	}
 	public Map<String, Object> getProperties() {
+		if(properties==null){
+			properties=new HashMap<>();
+		}
 		return properties;
 	}
 	public void setProperties(Map<String, Object> properties) {
