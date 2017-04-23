@@ -7,9 +7,9 @@ import com.aksh.titan.dto.Node;
 
 public interface NodeService {
 	
-	Node create(Node baseEntity);
+	Node create(Node node);
 
-	Node update(Node baseEntity);
+	Node update(Node node);
 
 	Node readByURI(String uri);
 	

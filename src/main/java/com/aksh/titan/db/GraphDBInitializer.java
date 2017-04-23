@@ -2,7 +2,7 @@ package com.aksh.titan.db;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
 
-public interface GraphDBConfigurator {
+public interface GraphDBInitializer {
 	
 	void init() throws Exception;
 

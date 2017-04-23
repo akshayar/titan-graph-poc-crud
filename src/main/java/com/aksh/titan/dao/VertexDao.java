@@ -13,11 +13,11 @@ public interface VertexDao {
 
 	Vertex getVertexByUri(String uri);
 
-	Vertex createVertex(Node baseEntity);
+	Vertex createVertex(Node node);
 
 	List<Vertex> getVerticesFor(Map<String, Object> properties);
 
-	Vertex updateVertex(Node baseEntity);
+	Vertex updateVertex(Node node);
 
 	Vertex getVertexByUriNLabel(String uri, String label);
 

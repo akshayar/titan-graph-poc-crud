@@ -27,15 +27,15 @@ import com.thinkaurelius.titan.core.schema.TitanGraphIndex;
 import com.thinkaurelius.titan.core.schema.TitanManagement;
 
 @Component
-public class GraphSchemaInitializer {
+public class GraphSchemaCreator {
 	public static final String INDEX_BACK_END_NAME = "search";
 	@Autowired
-	private TitanDBConfigurator titanDBConfigurator;
+	private TitanDBInitializer titanDBConfigurator;
 	TitanGraph graphDb;
 	TitanManagement mgmt;
 	@Autowired
 	private Schema schema;
-	private static final Logger logger = Logger.getLogger(GraphSchemaInitializer.class);
+	private static final Logger logger = Logger.getLogger(GraphSchemaCreator.class);
 
 	@PostConstruct
 	public void init() {
@@ -44,6 +44,7 @@ public class GraphSchemaInitializer {
 //		graphDb.tx().onReadWrite(Transaction.READ_WRITE_BEHAVIOR.MANUAL);
 		this.mgmt = graphDb.openManagement();
 		create(schema);
+		this.mgmt.commit();
 	}
 
 	private void create(Schema schema) {
@@ -62,7 +63,7 @@ public class GraphSchemaInitializer {
 				nameIndexBuilder = nameIndexBuilder.unique();
 			}
 			for (String key : index.getPropertyKeys()) {
-				PropertyKey pKey = mgmt.getPropertyKey(key);
+				PropertyKey pKey = getPropertyKey(key);
 				nameIndexBuilder = nameIndexBuilder.addKey(pKey);
 
 			}
@@ -71,13 +72,19 @@ public class GraphSchemaInitializer {
 			} else {
 				resultIndex = nameIndexBuilder.buildMixedIndex(INDEX_BACK_END_NAME);
 			}
-			logger.info(" Composite Index created with name :" + resultIndex.name() + ",backingIndex:"
+			logger.info("Index created with name :" + resultIndex.name() + ",backingIndex:"
 					+ resultIndex.getBackingIndex() + ",indexed-element :" + resultIndex.getIndexedElement() + ",unique:"
 					+ resultIndex.isUnique() + ",keys:" + Arrays.asList(resultIndex.getFieldKeys()));
+			logger.info("Index :"+resultIndex);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return resultIndex;
+	}
+
+	private PropertyKey getPropertyKey(String key) {
+		PropertyKey pKey = mgmt.getOrCreatePropertyKey(key);
+		return pKey;
 	}
 
 	private Object createEdgeIndex(EdgeIndexVO edgeIndex) {
@@ -169,7 +176,7 @@ public class GraphSchemaInitializer {
 
 	public PropertyKey createPropertyKey(String propertyKeyName, Class<?> propertyType) {
 
-		PropertyKey propertyKey = mgmt.getPropertyKey(propertyKeyName);
+		PropertyKey propertyKey = getPropertyKey(propertyKeyName);
 		if (propertyKey == null) {
 			propertyKey = mgmt.makePropertyKey(propertyKeyName).dataType(String.class).make();
 			logger.info("Property Key:" + propertyKey + "-" + propertyKey.label());

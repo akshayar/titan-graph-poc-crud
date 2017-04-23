@@ -93,7 +93,7 @@ public class RelationshipResourceTest {
 		Node node = new Node();
 		node.setEntityType("email");
 		node.setUri(System.currentTimeMillis() + "");
-		node.getAttributes().put("name", name);
+		node.getAttributes().put("name", name+System.currentTimeMillis());
 		return node;
 	}
 

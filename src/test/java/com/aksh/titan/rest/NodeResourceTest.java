@@ -62,7 +62,7 @@ public class NodeResourceTest {
 		Node node=new Node();
 		node.setEntityType("email");
 		node.setUri(System.currentTimeMillis()+"");
-		node.getAttributes().put("name", "Akshya");
+		node.getAttributes().put("name", "Akshya"+System.currentTimeMillis());
 		return node;
 	}
 	

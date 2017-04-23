@@ -1,7 +1,7 @@
 ## Following does not work. Gives error Query requires iterating over all vertices. For better performance, use indexes
 titan-db:
   config:
-    location: file:src/main/resources/dev/titan-berkeleydb.properties
+    location: file:src/main/resources/dev/titan-cassandra-es.properties
 
 schema:
   labels:
@@ -14,9 +14,23 @@ schema:
     - 
       dataType: String
       name : name
+    - 
+      dataType: String
+      name : age
   propertyIndexes:
     -
+      name: es_index
+      propertyKeys:
+        - i_uri
+        - name
+        - age
+        - email
+        - text
+        - emailText
+    -
       name: i_uri_index
+      composite: true
+      unique: true
       propertyKeys:
         - i_uri
         

@@ -29,10 +29,10 @@ public class VertexDaoImpl implements VertexDao {
 
 	
 	@Override
-	public Vertex createVertex(Node baseEntity) {
-		Vertex vertex = graph.addVertex(baseEntity.getEntityType());
-		vertex.property(PropertyKeyNames.URI, baseEntity.getUri());
-		addUpdateAttributes(baseEntity, vertex);
+	public Vertex createVertex(Node node) {
+		Vertex vertex = graph.addVertex(node.getEntityType());
+		vertex.property(PropertyKeyNames.URI, node.getUri());
+		addUpdateAttributes(node, vertex);
 		return vertex;
 	}
 
@@ -67,12 +67,12 @@ public class VertexDaoImpl implements VertexDao {
 		return vertices;
 	}
 
-	public Vertex updateVertex(Node baseEntity) {
-		Vertex vertex = getVertexByUri(baseEntity.getUri());
+	public Vertex updateVertex(Node node) {
+		Vertex vertex = getVertexByUri(node.getUri());
 		if (vertex != null) {
-			addUpdateAttributes(baseEntity, vertex);
+			addUpdateAttributes(node, vertex);
 		} else {
-			logger.info("Node not found :" + baseEntity.getUri());
+			logger.info("Node not found :" + node.getUri());
 		}
 		return vertex;
 	}
@@ -136,8 +136,8 @@ public class VertexDaoImpl implements VertexDao {
 		});
 		return edges;
 	}
-	private void addUpdateAttributes(Node baseEntity, Vertex vertex) {
-		baseEntity.getAttributes().entrySet().forEach(entry -> {
+	private void addUpdateAttributes(Node node, Vertex vertex) {
+		node.getAttributes().entrySet().forEach(entry -> {
 			vertex.property(entry.getKey(), entry.getValue());
 		});
 	}

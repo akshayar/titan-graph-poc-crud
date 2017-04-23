@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.aksh.titan.dao.VertexDao;
 import com.aksh.titan.dto.Node;
+import com.google.common.base.Preconditions;
 
 @Component
 public class NodeServiceImpl implements NodeService {
@@ -28,13 +30,17 @@ public class NodeServiceImpl implements NodeService {
 	private Graph graph;
 
 	@Override
-	public Node create(Node baseEntity) {
+	public Node create(Node node) {
+		Preconditions.checkArgument(!StringUtils.isEmpty(node.getUri()));
 		TransactionRunner<Node> runner = new TransactionRunner<>(graph);
 
 		Node result = runner.executeNReturn(() -> {
-			logger.info("Creating node : " + baseEntity);
-			Vertex vertex = vertexDao.createVertex(baseEntity);
-			Node resultNode = buildBaseEntity(vertex);
+			logger.info("Creating node : " + node);
+			Vertex vertex=vertexDao.getVertexByUri(node.getUri());
+			if(vertex==null){
+				vertex = vertexDao.createVertex(node);
+			}
+			Node resultNode = buildNode(vertex);
 			logger.info("Node created:" + resultNode);
 			return resultNode;
 		});
@@ -43,15 +49,16 @@ public class NodeServiceImpl implements NodeService {
 	}
 
 	@Override
-	public Node update(Node baseEntity) {
+	public Node update(Node node) {
+		Preconditions.checkArgument(!StringUtils.isEmpty(node.getUri()));
 		TransactionRunner<Node> runner = new TransactionRunner<>(graph);
 
 		Node result = runner.executeNReturn(() -> {
 			Node resultNode = null;
-			logger.info("Updating node :" + baseEntity);
-			Vertex vertex = vertexDao.updateVertex(baseEntity);
+			logger.info("Updating node :" + node);
+			Vertex vertex = vertexDao.updateVertex(node);
 			if (vertex != null) {
-				resultNode = buildBaseEntity(vertex);
+				resultNode = buildNode(vertex);
 				logger.info("Node updated :" + resultNode);
 			}
 			return resultNode;
@@ -79,7 +86,11 @@ public class NodeServiceImpl implements NodeService {
 		TransactionRunner<Node> runner = new TransactionRunner<>(graph);
 		Node result = runner.executeNReturn(() -> {
 			Vertex vertex = vertexDao.getVertexByUri(graphEntityId);
-			return buildBaseEntity(vertex);
+			Node temp=null;
+			if(vertex!=null){
+				temp=buildNode(vertex);
+			}
+			return temp;
 		});
 
 		return result;
@@ -91,13 +102,13 @@ public class NodeServiceImpl implements NodeService {
 		List<Node> result = new ArrayList<>();
 		runner.executeNReturn(() -> {
 			List<Vertex> vertices = vertexDao.getVerticesFor(properties);
-			return vertices.stream().map(this::buildBaseEntity).collect(Collectors.toList());
+			return vertices.stream().map(this::buildNode).collect(Collectors.toList());
 		});
 
 		return result;
 	}
 
-	private Node buildBaseEntity(Vertex vertex) {
+	private Node buildNode(Vertex vertex) {
 		return nodeBuilder.buildNode(vertex);
 	}
 }

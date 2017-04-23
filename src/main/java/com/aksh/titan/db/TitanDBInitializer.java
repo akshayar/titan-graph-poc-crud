@@ -25,7 +25,7 @@ import com.thinkaurelius.titan.core.TitanFactory;
  *
  */
 @Configuration
-public class TitanDBConfigurator implements GraphDBConfigurator{
+public class TitanDBInitializer implements GraphDBInitializer{
 	private static final Logger logger=Logger.getLogger("TitanDBConfigurator");
 	
 	public static Graph GRAPH_INSTANCE=null;

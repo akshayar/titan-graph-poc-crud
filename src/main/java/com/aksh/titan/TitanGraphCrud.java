@@ -7,12 +7,11 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.aksh.titan.db.TitanDBConfigurator;
+import com.aksh.titan.db.TitanDBInitializer;
 
 @SpringBootApplication
 public class TitanGraphCrud {
 	private static final Logger logger = Logger.getLogger(TitanGraphCrud.class);
-	private final String[] restResourcePackage = new String[] { "com.aksh.titan.rest" };
 
 	public TitanGraphCrud() {
 		logger.info("Constructor");
@@ -40,18 +39,34 @@ public class TitanGraphCrud {
 		 * SpringApplicationBuilder().parent(applicationContext).build().run(
 		 * EmailSurvLoadApplication.class, args);
 		 */
+		if(args.length<2){
+			startGremlinNCrud(args);	
+		}else{
+			startGremlinServer(args);
+		}
+		
+
+	}
+
+	private static void startGremlinNCrud(String[] args) {
+		startGremlinServer(args);
+		SpringApplication.run(TitanGraphCrud.class, args);
+	}
+
+	private static void startGremlinServer(String[] args) {
 		try {
-			logger.info("Starting germlin server");
-			GremlinServerCustom custom = GremlinServerCustom.start(args);
-			Map<String, Graph> graphs = custom.getServerGremlinExecutor().getGraphManager().getGraphs();
-			Graph graph = graphs.values().iterator().next();
-			TitanDBConfigurator.setGraph(graph);
-			logger.info("Done -Starting germlin server");
+			if (args.length != 0) {
+				logger.info("Starting germlin server");
+				GremlinServerCustom custom = GremlinServerCustom.start(args);
+				Map<String, Graph> graphs = custom.getServerGremlinExecutor().getGraphManager().getGraphs();
+				Graph graph = graphs.values().iterator().next();
+				TitanDBInitializer.setGraph(graph);
+				logger.info("Done -Starting germlin server");
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		SpringApplication.run(TitanGraphCrud.class, args);
-
 	}
 
 }

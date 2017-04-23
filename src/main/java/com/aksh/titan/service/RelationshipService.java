@@ -14,7 +14,7 @@ public interface RelationshipService {
 	
 	Relationship getRelationBetween(String fromId,String toId, String label);
 	
-	void delete(Relationship baseEntity);
+	void delete(Relationship node);
 
 	Relationship update(Relationship relationShip);
 	

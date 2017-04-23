@@ -13,15 +13,13 @@ public class NodeBuilder {
 	public Node buildNode(Vertex vertex){
 		Node node = buildNodeOnly(vertex);
 		vertex.edges(Direction.IN).forEachRemaining(edge->{
-			Node toNode=node;
 			Node fromNode=buildNodeOnly(edge.inVertex());
-			Relationship relation=buildRelation(fromNode, toNode, edge);
+			Relationship relation=buildRelation(fromNode, null, edge);
 			node.getInRelations().add(relation);
 		});
 		vertex.edges(Direction.OUT).forEachRemaining(edge ->{
-			Node fromNode=node;
-			Node toNode=buildNodeOnly(edge.inVertex());
-			Relationship relation=buildRelation(fromNode, toNode, edge);
+			Node toNode=buildNodeOnly(edge.outVertex());
+			Relationship relation=buildRelation(null, toNode, edge);
 			node.getOutRelations().add(relation);
 		});
 		return node;

@@ -33,6 +33,8 @@ public class TransactionRunner<T> {
 			else
 				logger.error(e);
 				
+		}finally{
+			graph.tx().close();
 		}
 		return result;
 	}
