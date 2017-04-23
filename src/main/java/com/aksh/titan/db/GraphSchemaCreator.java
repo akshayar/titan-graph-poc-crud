@@ -63,7 +63,7 @@ public class GraphSchemaCreator {
 				nameIndexBuilder = nameIndexBuilder.unique();
 			}
 			for (String key : index.getPropertyKeys()) {
-				PropertyKey pKey = getPropertyKey(key);
+				PropertyKey pKey = getOrCreatePropertyKey(key,null);
 				nameIndexBuilder = nameIndexBuilder.addKey(pKey);
 
 			}
@@ -174,11 +174,12 @@ public class GraphSchemaCreator {
 		return graphDb.openManagement().getGraphIndexes(Vertex.class);
 	}
 
-	public PropertyKey createPropertyKey(String propertyKeyName, Class<?> propertyType) {
+	public PropertyKey getOrCreatePropertyKey(final String propertyKeyName,final Class<?> propertyType) {
 
 		PropertyKey propertyKey = getPropertyKey(propertyKeyName);
 		if (propertyKey == null) {
-			propertyKey = mgmt.makePropertyKey(propertyKeyName).dataType(String.class).make();
+			Class<?> pType= (propertyType==null)?String.class:propertyType;
+			propertyKey = mgmt.makePropertyKey(propertyKeyName).dataType(pType).make();
 			logger.info("Property Key:" + propertyKey + "-" + propertyKey.label());
 		}
 		return propertyKey;
