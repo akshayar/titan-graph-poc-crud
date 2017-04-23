@@ -30,7 +30,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.Slf4JLoggerFactory;
 
-public class GremlinServerCustom {
+public class GremlinServerModified {
 	
 	 static {
 	        // hook slf4j up to netty internal logging
@@ -39,7 +39,7 @@ public class GremlinServerCustom {
 
 	    private static final String SERVER_THREAD_PREFIX = "gremlin-server-";
 
-	    private static final Logger logger = LoggerFactory.getLogger(GremlinServerCustom.class);
+	    private static final Logger logger = LoggerFactory.getLogger(GremlinServerModified.class);
 	    private final Settings settings;
 	    private Channel ch;
 
@@ -54,7 +54,7 @@ public class GremlinServerCustom {
 	    /**
 	     * Construct a Gremlin Server instance from {@link Settings}.
 	     */
-	    public GremlinServerCustom(final Settings settings) {
+	    public GremlinServerModified(final Settings settings) {
 	        this.settings = settings;
 
 	        Runtime.getRuntime().addShutdownHook(new Thread(() -> this.stop().join(), SERVER_THREAD_PREFIX + "shutdown"));
@@ -75,7 +75,7 @@ public class GremlinServerCustom {
 	     * is useful when Gremlin Server is being used in an embedded style and there is a need to share thread pools
 	     * with the hosting application.
 	     */
-	    public GremlinServerCustom(final ServerGremlinExecutor<EventLoopGroup> serverGremlinExecutor) {
+	    public GremlinServerModified(final ServerGremlinExecutor<EventLoopGroup> serverGremlinExecutor) {
 	        this.serverGremlinExecutor = serverGremlinExecutor;
 	        this.settings = serverGremlinExecutor.getSettings();
 
@@ -248,7 +248,7 @@ public class GremlinServerCustom {
 	        return serverStopped;
 	    }
 
-	    public static GremlinServerCustom start(final String[] args) throws Exception {
+	    public static GremlinServerModified start(final String[] args) throws Exception {
 	        // add to vm options: -Dlog4j.configuration=file:conf/log4j.properties
 	        printHeader();
 	        final String file;
@@ -266,8 +266,8 @@ public class GremlinServerCustom {
 	        }
 
 	        logger.info("Configuring Gremlin Server from {}", file);
-	        settings.optionalMetrics().ifPresent(GremlinServerCustom::configureMetrics);
-	        final GremlinServerCustom server = new GremlinServerCustom(settings);
+	        settings.optionalMetrics().ifPresent(GremlinServerModified::configureMetrics);
+	        final GremlinServerModified server = new GremlinServerModified(settings);
 	        server.start().exceptionally(t -> {
 	            logger.error("Gremlin Server was unable to start and will now begin shutdown: {}", t.getMessage());
 	            server.stop().join();
